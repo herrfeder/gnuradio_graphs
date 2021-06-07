@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: untitled
+    id: e312_wbfm_receiver
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -22,7 +22,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: Not titled yet
-    window_size: ''
+    window_size: (1000,1000)
   states:
     bus_sink: false
     bus_source: false
@@ -37,20 +37,20 @@ blocks:
   parameters:
     comment: ''
     gui_hint: ''
-    label: center_freq
+    label: ''
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
     start: 90e6
     step: 1e5
-    stop: 105e6
+    stop: 110e6
     value: 98.5e6
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [208, 460.0]
+    coordinate: [152, 476.0]
     rotation: 0
     state: true
 - name: rf_gain
@@ -58,20 +58,20 @@ blocks:
   parameters:
     comment: ''
     gui_hint: ''
-    label: rf_gain
+    label: ''
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
-    start: '40'
-    step: '1'
-    stop: '70'
+    start: '0'
+    step: '5'
+    stop: '100'
     value: '50'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [208, 324.0]
+    coordinate: [312, 476.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -84,18 +84,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [184, 12]
-    rotation: 0
-    state: enabled
-- name: usrp_e312_ip
-  id: variable
-  parameters:
-    comment: ''
-    value: '"192.168.10.2"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [179, 86]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0
@@ -114,7 +102,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [480, 336.0]
+    coordinate: [752, 292.0]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0
@@ -194,7 +182,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [648, 172.0]
+    coordinate: [984, 276.0]
     rotation: 0
     state: true
 - name: xmlrpc_client_0
@@ -202,7 +190,7 @@ blocks:
   parameters:
     addr: '"192.168.10.2"'
     alias: ''
-    callback: set_freq
+    callback: center_freq
     comment: ''
     port: '30000'
     variable: center_freq
@@ -210,9 +198,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [40, 476.0]
+    coordinate: [152, 372.0]
     rotation: 0
-    state: disabled
+    state: true
 - name: xmlrpc_client_0_0
   id: xmlrpc_client
   parameters:
@@ -226,13 +214,13 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 340.0]
+    coordinate: [312, 372.0]
     rotation: 0
-    state: disabled
+    state: true
 - name: zeromq_pull_source_0
   id: zeromq_pull_source
   parameters:
-    address: tcp://192.168.10.2:9998
+    address: tcp://192.168.10.2:9999
     affinity: ''
     alias: ''
     comment: ''
@@ -247,7 +235,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [244, 192]
+    coordinate: [512, 280.0]
     rotation: 0
     state: true
 

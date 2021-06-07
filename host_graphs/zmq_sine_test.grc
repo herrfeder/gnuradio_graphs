@@ -21,7 +21,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: zmq_sine_test
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -157,7 +157,7 @@ blocks:
     color9: '"dark green"'
     comment: ''
     ctrlpanel: 'False'
-    fc: '1000'
+    fc: frequency
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -234,7 +234,7 @@ blocks:
     color8: '0'
     color9: '0'
     comment: ''
-    fc: '0'
+    fc: frequency
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -266,7 +266,7 @@ blocks:
     bus_structure: null
     coordinate: [976, 172.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: xmlrpc_client_0
   id: xmlrpc_client
   parameters:

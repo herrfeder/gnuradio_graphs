@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: zmq_sine_test
+# Title: Not titled yet
 # GNU Radio version: 3.8.3.1-rc1
 
 from distutils.version import StrictVersion
@@ -41,19 +41,15 @@ try:
     from xmlrpc.client import ServerProxy
 except ImportError:
     from xmlrpclib import ServerProxy
-try:
-    from xmlrpc.client import ServerProxy
-except ImportError:
-    from xmlrpclib import ServerProxy
 
 from gnuradio import qtgui
 
-class zmq_sine_test(gr.top_block, Qt.QWidget):
+class e312_wbfm_receiver(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "zmq_sine_test")
+        gr.top_block.__init__(self, "Not titled yet")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("zmq_sine_test")
+        self.setWindowTitle("Not titled yet")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -71,7 +67,7 @@ class zmq_sine_test(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "zmq_sine_test")
+        self.settings = Qt.QSettings("GNU Radio", "e312_wbfm_receiver")
 
         try:
             if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -84,25 +80,26 @@ class zmq_sine_test(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 32000
-        self.offset = offset = 0
-        self.frequency = frequency = 1000
-        self.amplitude = amplitude = 1
+        self.samp_rate = samp_rate = 1e6
+        self.rf_gain = rf_gain = 50
+        self.center_freq = center_freq = 98.5e6
 
         ##################################################
         # Blocks
         ##################################################
-        self._frequency_range = Range(500, 2000, 10, 1000, 200)
-        self._frequency_win = RangeWidget(self._frequency_range, self.set_frequency, 'frequency', "counter_slider", float)
-        self.top_layout.addWidget(self._frequency_win)
-        self.zeromq_pull_source_0 = zeromq.pull_source(gr.sizeof_gr_complex, 1, 'tcp://192.168.10.2:9231', 100, False, -1)
-        self.xmlrpc_client_0_0_0 = ServerProxy('http://"192.168.10.2":30000')
-        self.xmlrpc_client_0_0 = ServerProxy('http://"192.168.10.2":30000')
-        self.xmlrpc_client_0 = ServerProxy('http://"192.168.10.2":30000')
+        self._center_freq_range = Range(90e6, 110e6, 1e5, 98.5e6, 200)
+        self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, 'center_freq', "counter_slider", float)
+        self.top_layout.addWidget(self._center_freq_win)
+        self.zeromq_pull_source_0 = zeromq.pull_source(gr.sizeof_gr_complex, 1, 'tcp://192.168.10.2:9999', 100, False, -1)
+        self.xmlrpc_client_0_0 = ServerProxy('http://192.168.10.2:30000')
+        self.xmlrpc_client_0 = ServerProxy('http://192.168.10.2:30000')
+        self._rf_gain_range = Range(0, 100, 5, 50, 200)
+        self._rf_gain_win = RangeWidget(self._rf_gain_range, self.set_rf_gain, 'rf_gain', "counter_slider", float)
+        self.top_layout.addWidget(self._rf_gain_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
             1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
-            frequency, #fc
+            center_freq, #fc
             samp_rate, #bw
             "", #name
             1
@@ -139,13 +136,7 @@ class zmq_sine_test(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self._offset_range = Range(-10, 10, 1, 0, 200)
-        self._offset_win = RangeWidget(self._offset_range, self.set_offset, 'offset', "counter_slider", float)
-        self.top_layout.addWidget(self._offset_win)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self._amplitude_range = Range(0.5, 100, 1, 1, 200)
-        self._amplitude_win = RangeWidget(self._amplitude_range, self.set_amplitude, 'amplitude', "counter_slider", float)
-        self.top_layout.addWidget(self._amplitude_win)
 
 
         ##################################################
@@ -156,7 +147,7 @@ class zmq_sine_test(gr.top_block, Qt.QWidget):
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "zmq_sine_test")
+        self.settings = Qt.QSettings("GNU Radio", "e312_wbfm_receiver")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -166,35 +157,28 @@ class zmq_sine_test(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.frequency, self.samp_rate)
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
 
-    def get_offset(self):
-        return self.offset
+    def get_rf_gain(self):
+        return self.rf_gain
 
-    def set_offset(self, offset):
-        self.offset = offset
-        self.xmlrpc_client_0_0_0.offset(self.offset)
+    def set_rf_gain(self, rf_gain):
+        self.rf_gain = rf_gain
+        self.xmlrpc_client_0_0.set_rf_gain(self.rf_gain)
 
-    def get_frequency(self):
-        return self.frequency
+    def get_center_freq(self):
+        return self.center_freq
 
-    def set_frequency(self, frequency):
-        self.frequency = frequency
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.frequency, self.samp_rate)
-        self.xmlrpc_client_0_0.frequency(self.frequency)
-
-    def get_amplitude(self):
-        return self.amplitude
-
-    def set_amplitude(self, amplitude):
-        self.amplitude = amplitude
-        self.xmlrpc_client_0.amplitude(self.amplitude)
+    def set_center_freq(self, center_freq):
+        self.center_freq = center_freq
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
+        self.xmlrpc_client_0.set_center_freq(self.center_freq)
 
 
 
 
 
-def main(top_block_cls=zmq_sine_test, options=None):
+def main(top_block_cls=e312_wbfm_receiver, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
