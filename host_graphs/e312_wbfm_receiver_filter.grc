@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: e312_wbfm_receiver
+    id: e312_wbfm_receiver_filter
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -21,7 +21,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: e312_wbfm_receiver_filter
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -32,6 +32,69 @@ options:
     state: enabled
 
 blocks:
+- name: bandpass_high_cutoff
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '5000'
+    step: 0.1e3
+    stop: '10000'
+    value: '6000'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 508.0]
+    rotation: 0
+    state: true
+- name: bandpass_low_cutoff
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '100'
+    step: 0.1e3
+    stop: '6000'
+    value: '600'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 396.0]
+    rotation: 0
+    state: true
+- name: bandpass_transition
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '100'
+    step: 0.1e3
+    stop: '1000'
+    value: '400'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 620.0]
+    rotation: 0
+    state: true
 - name: center_freq
   id: variable_qtgui_range
   parameters:
@@ -63,6 +126,48 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [16, 572.0]
+    rotation: 0
+    state: true
+- name: lowpass_cutoff
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: 0.5e5
+    step: 0.1e5
+    stop: 1.5e5
+    value: 1e5
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 396.0]
+    rotation: 0
+    state: true
+- name: lowpass_transition
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: 0.5e4
+    step: 0.1e4
+    stop: 1.5e4
+    value: 1e4
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [520, 396.0]
     rotation: 0
     state: true
 - name: rf_gain
@@ -110,6 +215,30 @@ blocks:
     coordinate: [184, 572.0]
     rotation: 0
     state: true
+- name: set_lowpass_cutoff
+  id: variable
+  parameters:
+    comment: ''
+    value: '"set_lowpass_cutoff"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 556.0]
+    rotation: 0
+    state: true
+- name: set_lowpass_transition
+  id: variable
+  parameters:
+    comment: ''
+    value: '"set_lowpass_transition"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 620.0]
+    rotation: 0
+    state: true
 - name: set_rf_gain
   id: variable
   parameters:
@@ -136,26 +265,32 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 332.0]
+    coordinate: [968, 164.0]
     rotation: 0
     state: true
-- name: blocks_throttle_0
-  id: blocks_throttle
+- name: band_pass_filter_0
+  id: band_pass_filter
   parameters:
     affinity: ''
     alias: ''
+    beta: '6.76'
     comment: ''
-    ignoretag: 'True'
+    decim: '1'
+    gain: '1'
+    high_cutoff_freq: bandpass_high_cutoff
+    interp: '1'
+    low_cutoff_freq: bandpass_low_cutoff
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: samp_rate
-    type: float
-    vlen: '1'
+    samp_rate: samp_rate
+    type: fir_filter_fff
+    width: bandpass_transition
+    win: firdes.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [648, 220.0]
+    coordinate: [672, 4.0]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0
@@ -176,7 +311,7 @@ blocks:
     autoscale: 'False'
     average: '1.0'
     axislabels: 'True'
-    bw: samp_rate
+    bw: samp_rate*100
     color1: '"blue"'
     color10: '"dark blue"'
     color2: '"red"'
@@ -189,7 +324,7 @@ blocks:
     color9: '"dark green"'
     comment: ''
     ctrlpanel: 'False'
-    fc: center_freq
+    fc: '0'
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -235,7 +370,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [872, 204.0]
+    coordinate: [896, 44.0]
     rotation: 0
     state: true
 - name: xmlrpc_client_0
@@ -270,6 +405,38 @@ blocks:
     coordinate: [200, 292.0]
     rotation: 0
     state: true
+- name: xmlrpc_client_0_0_0
+  id: xmlrpc_client
+  parameters:
+    addr: e312sdr
+    alias: ''
+    callback: set_lowpass_transition
+    comment: ''
+    port: '30000'
+    variable: lowpass_transition
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [520, 292.0]
+    rotation: 0
+    state: true
+- name: xmlrpc_client_0_0_0_0
+  id: xmlrpc_client
+  parameters:
+    addr: e312sdr
+    alias: ''
+    callback: set_lowpass_cutoff
+    comment: ''
+    port: '30000'
+    variable: lowpass_cutoff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 292.0]
+    rotation: 0
+    state: true
 - name: zeromq_pull_source_0
   id: zeromq_pull_source
   parameters:
@@ -288,14 +455,36 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 204.0]
+    coordinate: [408, 44.0]
+    rotation: 0
+    state: disabled
+- name: zeromq_sub_source_0
+  id: zeromq_sub_source
+  parameters:
+    address: tcp://192.168.10.2:9999
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 140.0]
     rotation: 0
     state: true
 
 connections:
-- [blocks_throttle_0, '0', audio_sink_0, '0']
-- [blocks_throttle_0, '0', qtgui_freq_sink_x_0, '0']
-- [zeromq_pull_source_0, '0', blocks_throttle_0, '0']
+- [band_pass_filter_0, '0', audio_sink_0, '0']
+- [band_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
+- [zeromq_pull_source_0, '0', band_pass_filter_0, '0']
+- [zeromq_sub_source_0, '0', band_pass_filter_0, '0']
 
 metadata:
   file_format: 1

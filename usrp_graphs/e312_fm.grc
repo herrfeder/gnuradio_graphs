@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <?grc format='1' created='3.7.9'?>
 <flow_graph>
-  <timestamp>Fri Jan 15 08:10:36 2016</timestamp>
+  <timestamp>Sat Jan 16 05:16:40 2016</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -38,7 +38,7 @@
     </param>
     <param>
       <key>generate_options</key>
-      <value>qt_gui</value>
+      <value>no_gui</value>
     </param>
     <param>
       <key>hier_block_src_path</key>
@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>top_block</value>
+      <value>e312_wbfm_receiver_zmq</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -78,18 +78,14 @@
     </param>
     <param>
       <key>title</key>
-      <value></value>
+      <value>e312_wbfm_receiver_zmq</value>
     </param>
   </block>
   <block>
-    <key>variable_qtgui_range</key>
+    <key>variable</key>
     <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>100e6</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -97,11 +93,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(440, 80)</value>
-    </param>
-    <param>
-      <key>gui_hint</key>
-      <value></value>
+      <value>(224, 568)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -112,36 +104,35 @@
       <value>center_freq</value>
     </param>
     <param>
-      <key>label</key>
-      <value>center_freq</value>
+      <key>value</key>
+      <value>98.5e6</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
     </param>
     <param>
-      <key>min_len</key>
-      <value>200</value>
+      <key>_enabled</key>
+      <value>True</value>
     </param>
     <param>
-      <key>orient</key>
-      <value>Qt.Horizontal</value>
+      <key>_coordinate</key>
+      <value>(224, 637)</value>
     </param>
     <param>
-      <key>start</key>
-      <value>95e6</value>
+      <key>_rotation</key>
+      <value>0</value>
     </param>
     <param>
-      <key>step</key>
-      <value>1e5</value>
+      <key>id</key>
+      <value>rf_gain</value>
     </param>
     <param>
-      <key>stop</key>
-      <value>105e6</value>
-    </param>
-    <param>
-      <key>rangeType</key>
-      <value>float</value>
-    </param>
-    <param>
-      <key>widget</key>
-      <value>counter_slider</value>
+      <key>value</key>
+      <value>50</value>
     </param>
   </block>
   <block>
@@ -168,26 +159,72 @@
     </param>
     <param>
       <key>value</key>
-      <value>32000</value>
+      <value>1e6</value>
     </param>
   </block>
   <block>
-    <key>qtgui_sink_x</key>
+    <key>variable</key>
     <param>
-      <key>bw</key>
-      <value>samp_rate</value>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 613)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>server_address</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"192.168.10.2"</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 557)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>server_port</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>30000</value>
+    </param>
+  </block>
+  <block>
+    <key>analog_wfm_rcv</key>
+    <param>
+      <key>audio_decimation</key>
+      <value>1</value>
     </param>
     <param>
       <key>alias</key>
       <value></value>
-    </param>
-    <param>
-      <key>fc</key>
-      <value>center_freq</value>
-    </param>
-    <param>
-      <key>freqchangevar</key>
-      <value>None</value>
     </param>
     <param>
       <key>comment</key>
@@ -202,16 +239,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>fftsize</key>
-      <value>1024</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(744, 207)</value>
-    </param>
-    <param>
-      <key>gui_hint</key>
-      <value></value>
+      <value>(624, 296)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -219,7 +248,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>qtgui_sink_x_0</value>
+      <value>analog_wfm_rcv_0</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -230,44 +259,181 @@
       <value>0</value>
     </param>
     <param>
-      <key>name</key>
-      <value>""</value>
+      <key>quad_rate</key>
+      <value>2e5</value>
+    </param>
+  </block>
+  <block>
+    <key>baz_xmlrpc_server</key>
+    <param>
+      <key>addr</key>
+      <value>server_address</value>
     </param>
     <param>
-      <key>plotconst</key>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 670)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>baz_xmlrpc_server_0</value>
+    </param>
+    <param>
+      <key>port</key>
+      <value>server_port</value>
+    </param>
+    <param>
+      <key>sigs</key>
+      <value>{}</value>
+    </param>
+  </block>
+  <block>
+    <key>low_pass_filter</key>
+    <param>
+      <key>beta</key>
+      <value>6.76</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>cutoff_freq</key>
+      <value>1e5</value>
+    </param>
+    <param>
+      <key>decim</key>
+      <value>5</value>
+    </param>
+    <param>
+      <key>_enabled</key>
       <value>True</value>
-    </param>
-    <param>
-      <key>plotfreq</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>plottime</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>plotwaterfall</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>showports</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>showrf</key>
-      <value>False</value>
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>fir_filter_ccf</value>
     </param>
     <param>
-      <key>rate</key>
-      <value>10</value>
+      <key>_coordinate</key>
+      <value>(344, 202)</value>
     </param>
     <param>
-      <key>wintype</key>
-      <value>firdes.WIN_BLACKMAN_hARRIS</value>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>gain</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>low_pass_filter_0</value>
+    </param>
+    <param>
+      <key>interp</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>samp_rate</key>
+      <value>samp_rate</value>
+    </param>
+    <param>
+      <key>width</key>
+      <value>1e4</value>
+    </param>
+    <param>
+      <key>win</key>
+      <value>firdes.WIN_HAMMING</value>
+    </param>
+  </block>
+  <block>
+    <key>rational_resampler_xxx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>decim</key>
+      <value>200</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>fbw</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(848, 279)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>rational_resampler_xxx_0</value>
+    </param>
+    <param>
+      <key>interp</key>
+      <value>48</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>taps</key>
+      <value></value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>fff</value>
     </param>
   </block>
   <block>
@@ -278,7 +444,7 @@
     </param>
     <param>
       <key>ant0</key>
-      <value></value>
+      <value>RX2</value>
     </param>
     <param>
       <key>bw0</key>
@@ -302,7 +468,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>0</value>
+      <value>rf_gain</value>
     </param>
     <param>
       <key>ant10</key>
@@ -1198,7 +1364,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(168, 254)</value>
+      <value>(112, 302)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1349,9 +1515,135 @@
       <value></value>
     </param>
   </block>
+  <block>
+    <key>zeromq_push_sink</key>
+    <param>
+      <key>address</key>
+      <value>tcp://*:9998</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(288, 470)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>zeromq_push_sink_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>pass_tags</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>timeout</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>zeromq_push_sink</key>
+    <param>
+      <key>address</key>
+      <value>tcp://*:9999</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1056, 432)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>zeromq_push_sink_1</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>pass_tags</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>timeout</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <connection>
+    <source_block_id>analog_wfm_rcv_0</source_block_id>
+    <sink_block_id>rational_resampler_xxx_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>low_pass_filter_0</source_block_id>
+    <sink_block_id>analog_wfm_rcv_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>rational_resampler_xxx_0</source_block_id>
+    <sink_block_id>zeromq_push_sink_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
   <connection>
     <source_block_id>uhd_usrp_source_0</source_block_id>
-    <sink_block_id>qtgui_sink_x_0</sink_block_id>
+    <sink_block_id>low_pass_filter_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>uhd_usrp_source_0</source_block_id>
+    <sink_block_id>zeromq_push_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
