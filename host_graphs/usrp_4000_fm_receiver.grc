@@ -41,7 +41,7 @@ blocks:
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
-    start: 90e6
+    start: 90.0e6
     step: 1e4
     stop: 110e6
     value: 97.7e6
@@ -198,6 +198,24 @@ blocks:
     coordinate: [784, 692.0]
     rotation: 0
     state: true
+- name: blocks_tcp_server_sink_0
+  id: blocks_tcp_server_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ipaddr: 127.0.0.1
+    noblock: 'True'
+    port: '10000'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1336, 452.0]
+    rotation: 0
+    state: true
 - name: blocks_threshold_ff_0
   id: blocks_threshold_ff
   parameters:
@@ -237,7 +255,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 148.0]
+    coordinate: [504, 140.0]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0
@@ -869,7 +887,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 156.0]
+    coordinate: [208, 140.0]
     rotation: 0
     state: true
 - name: zeromq_pub_sink_0
@@ -922,6 +940,7 @@ connections:
 - [low_pass_filter_0, '0', blocks_complex_to_mag_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0_0_0, '0']
 - [rational_resampler_xxx_0, '0', audio_sink_0, '0']
+- [rational_resampler_xxx_0, '0', blocks_tcp_server_sink_0, '0']
 - [rational_resampler_xxx_0, '0', zeromq_pub_sink_0, '0']
 - [uhd_usrp_source_0, '0', low_pass_filter_0, '0']
 - [uhd_usrp_source_0, '0', qtgui_freq_sink_x_0_0, '0']

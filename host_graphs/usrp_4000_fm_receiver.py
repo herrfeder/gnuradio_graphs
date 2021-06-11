@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: usrp_4000_fm_receiver
-# GNU Radio version: 3.8.3.1-rc1
+# GNU Radio version: v3.8.3.1-2-g18f86220
 
 from distutils.version import StrictVersion
 
@@ -90,7 +90,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self._low_pass_cutoff_range = Range(5000, 30000, 1000, 30000, 200)
         self._low_pass_cutoff_win = RangeWidget(self._low_pass_cutoff_range, self.set_low_pass_cutoff, 'low_pass_cutoff', "counter_slider", float)
         self.top_layout.addWidget(self._low_pass_cutoff_win)
-        self._center_freq_range = Range(90e6, 110e6, 1e4, 97.7e6, 200)
+        self._center_freq_range = Range(90.0e6, 110e6, 1e4, 97.7e6, 200)
         self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, 'center_freq', "counter_slider", float)
         self.top_layout.addWidget(self._center_freq_win)
         self.zeromq_pub_sink_0_0 = zeromq.pub_sink(gr.sizeof_float, 1, 'tcp://*:9998', 100, False, -1)
@@ -244,6 +244,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
                 firdes.WIN_HAMMING,
                 6.76))
         self.blocks_threshold_ff_0 = blocks.threshold_ff(0.5, 1, 0)
+        self.blocks_tcp_server_sink_0 = blocks.tcp_server_sink(gr.sizeof_float*1, '127.0.0.1', 10000, True)
         self.blocks_moving_average_xx_0 = blocks.moving_average_ff(1000, 1, 4000, 1)
         self.blocks_max_xx_0 = blocks.max_ff(1, 1)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
@@ -265,6 +266,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.blocks_complex_to_mag_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_freq_sink_x_0_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_tcp_server_sink_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.zeromq_pub_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_0_0, 0))
