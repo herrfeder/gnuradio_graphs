@@ -50,7 +50,7 @@ uhd_images_downloader -t sdimg -t e310 -t sg3
 https://kb.ettus.com/Writing_the_USRP_File_System_Disk_Image_to_a_SD_Card
 
   * Latest Image:
-    * https://files.ettus.com/e3xx_images/e3xx-release-4/ettus-e3xx-sg3/
+    * https://files.ettus.com/binaries/cache/e3xx/meta-ettus-v4.0.0.0/e3xx_e310_sg3_sdimg_default-v4.0.0.0.zip
 
 ### Old Legacy Images
 
