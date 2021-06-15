@@ -25,6 +25,7 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import analog
+from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
@@ -248,6 +249,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.blocks_moving_average_xx_0 = blocks.moving_average_ff(1000, 1, 4000, 1)
         self.blocks_max_xx_0 = blocks.max_ff(1, 1)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
+        self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=2e5,
         	audio_decimation=1,
@@ -266,6 +268,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.blocks_complex_to_mag_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_freq_sink_x_0_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_tcp_server_sink_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.zeromq_pub_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.low_pass_filter_0, 0))

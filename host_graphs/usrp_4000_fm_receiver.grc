@@ -140,7 +140,7 @@ blocks:
     bus_structure: null
     coordinate: [1392, 200.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_complex_to_mag_0
   id: blocks_complex_to_mag
   parameters:
@@ -906,7 +906,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1336, 360.0]
+    coordinate: [1344, 324.0]
     rotation: 0
     state: true
 - name: zeromq_pub_sink_0_0
