@@ -2,7 +2,10 @@
 ## Overview
 
   * `usrp_graphs` contains only flowgraph files that works with GnuRadio Versions below 3.8 
-    * it's intended to use them with gnuradio-companion on the Ettus USRP E312 itself    
+    * it's intended to use them with gnuradio-companion on the Ettus USRP E312 itself
+  * `host_graphs` contains flowgraph files for running on host with GnuRadio Versions above 3.8
+  * `python` contains several snippets and attemps for reading ZMQ/UDP Interfaces 
+ 
 
 
 ## Gnuradio and USRP E312
