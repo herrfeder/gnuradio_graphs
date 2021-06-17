@@ -44,7 +44,7 @@ blocks:
     start: 90.0e6
     step: 1e4
     stop: 110e6
-    value: 97.7e6
+    value: 102.6e6
     widget: counter_slider
   states:
     bus_sink: false
@@ -53,6 +53,18 @@ blocks:
     coordinate: [120, 500.0]
     rotation: 0
     state: true
+- name: decimation
+  id: variable
+  parameters:
+    comment: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 12.0]
+    rotation: 0
+    state: enabled
 - name: low_pass_cutoff
   id: variable_qtgui_range
   parameters:
@@ -140,7 +152,7 @@ blocks:
     bus_structure: null
     coordinate: [1392, 200.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_complex_to_mag_0
   id: blocks_complex_to_mag
   parameters:
@@ -215,7 +227,7 @@ blocks:
     bus_structure: null
     coordinate: [1336, 452.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_threshold_ff_0
   id: blocks_threshold_ff
   parameters:
@@ -242,7 +254,7 @@ blocks:
     beta: '6.76'
     comment: ''
     cutoff_freq: low_pass_cutoff
-    decim: '5'
+    decim: decimation
     gain: '1'
     interp: '1'
     maxoutbuf: '0'
@@ -436,7 +448,7 @@ blocks:
     autoscale: 'False'
     average: '1.0'
     axislabels: 'True'
-    bw: samp_rate
+    bw: samp_rate/decimation
     color1: '"blue"'
     color10: '"dark blue"'
     color2: '"red"'
@@ -496,6 +508,67 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [680, 452.0]
+    rotation: 0
+    state: true
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate/decimation
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: center_freq
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [696, 364.0]
     rotation: 0
     state: true
 - name: rational_resampler_xxx_0
@@ -939,6 +1012,7 @@ connections:
 - [low_pass_filter_0, '0', analog_wfm_rcv_0, '0']
 - [low_pass_filter_0, '0', blocks_complex_to_mag_0, '0']
 - [low_pass_filter_0, '0', qtgui_freq_sink_x_0_0_0, '0']
+- [low_pass_filter_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rational_resampler_xxx_0, '0', audio_sink_0, '0']
 - [rational_resampler_xxx_0, '0', blocks_tcp_server_sink_0, '0']
 - [rational_resampler_xxx_0, '0', zeromq_pub_sink_0, '0']

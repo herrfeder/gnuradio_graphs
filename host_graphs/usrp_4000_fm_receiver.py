@@ -25,7 +25,6 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import analog
-from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
@@ -80,7 +79,8 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 1e6
         self.low_pass_transition = low_pass_transition = 1000
         self.low_pass_cutoff = low_pass_cutoff = 30000
-        self.center_freq = center_freq = 97.7e6
+        self.decimation = decimation = 5
+        self.center_freq = center_freq = 102.6e6
 
         ##################################################
         # Blocks
@@ -91,7 +91,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self._low_pass_cutoff_range = Range(5000, 30000, 1000, 30000, 200)
         self._low_pass_cutoff_win = RangeWidget(self._low_pass_cutoff_range, self.set_low_pass_cutoff, 'low_pass_cutoff', "counter_slider", float)
         self.top_layout.addWidget(self._low_pass_cutoff_win)
-        self._center_freq_range = Range(90.0e6, 110e6, 1e4, 97.7e6, 200)
+        self._center_freq_range = Range(90.0e6, 110e6, 1e4, 102.6e6, 200)
         self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, 'center_freq', "counter_slider", float)
         self.top_layout.addWidget(self._center_freq_win)
         self.zeromq_pub_sink_0_0 = zeromq.pub_sink(gr.sizeof_float, 1, 'tcp://*:9998', 100, False, -1)
@@ -114,11 +114,44 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
                 decimation=200,
                 taps=None,
                 fractional_bw=0.1)
+        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            center_freq, #fc
+            samp_rate/decimation, #bw
+            "", #name
+            1 #number of inputs
+        )
+        self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_0.enable_grid(False)
+        self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
+
+
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
+        colors = [0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
+            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
+
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.qtgui_freq_sink_x_0_0_0 = qtgui.freq_sink_c(
             1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
             center_freq, #fc
-            samp_rate, #bw
+            samp_rate/decimation, #bw
             'after_low_pass', #name
             1
         )
@@ -236,7 +269,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
-            5,
+            decimation,
             firdes.low_pass(
                 1,
                 samp_rate,
@@ -245,11 +278,9 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
                 firdes.WIN_HAMMING,
                 6.76))
         self.blocks_threshold_ff_0 = blocks.threshold_ff(0.5, 1, 0)
-        self.blocks_tcp_server_sink_0 = blocks.tcp_server_sink(gr.sizeof_float*1, '127.0.0.1', 10000, True)
         self.blocks_moving_average_xx_0 = blocks.moving_average_ff(1000, 1, 4000, 1)
         self.blocks_max_xx_0 = blocks.max_ff(1, 1)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
-        self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=2e5,
         	audio_decimation=1,
@@ -268,8 +299,7 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.blocks_complex_to_mag_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_freq_sink_x_0_0_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_tcp_server_sink_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.zeromq_pub_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_0_0, 0))
@@ -288,7 +318,8 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.low_pass_cutoff, self.low_pass_transition, firdes.WIN_HAMMING, 6.76))
         self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
         self.qtgui_freq_sink_x_0_0.set_frequency_range(self.center_freq, self.samp_rate)
-        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.center_freq, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
     def get_low_pass_transition(self):
@@ -305,6 +336,14 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.low_pass_cutoff = low_pass_cutoff
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.low_pass_cutoff, self.low_pass_transition, firdes.WIN_HAMMING, 6.76))
 
+    def get_decimation(self):
+        return self.decimation
+
+    def set_decimation(self, decimation):
+        self.decimation = decimation
+        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
+
     def get_center_freq(self):
         return self.center_freq
 
@@ -312,7 +351,8 @@ class usrp_4000_fm_receiver(gr.top_block, Qt.QWidget):
         self.center_freq = center_freq
         self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
         self.qtgui_freq_sink_x_0_0.set_frequency_range(self.center_freq, self.samp_rate)
-        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.center_freq, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decimation)
         self.uhd_usrp_source_0.set_center_freq(self.center_freq, 0)
 
 

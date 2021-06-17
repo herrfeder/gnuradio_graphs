@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: usrp_4000_hf_am_receiver
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: v3.8.3.1-2-g18f86220
 
 from distutils.version import StrictVersion
 
@@ -25,7 +25,6 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import analog
-from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
@@ -34,9 +33,10 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, RangeWidget
-import osmosdr
+from gnuradio import uhd
 import time
+from gnuradio.qtgui import Range, RangeWidget
+
 from gnuradio import qtgui
 
 class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
@@ -87,21 +87,63 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
         ##################################################
         self._center_freq_range = Range(120e6, 130e6, 1e4, 125e6, 200)
         self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, 'center_freq', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._center_freq_win)
+        self.top_layout.addWidget(self._center_freq_win)
         self._band_pass_transition_range = Range(100, 4000, 100, 400, 200)
         self._band_pass_transition_win = RangeWidget(self._band_pass_transition_range, self.set_band_pass_transition, 'band_pass_transition', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._band_pass_transition_win)
+        self.top_layout.addWidget(self._band_pass_transition_win)
         self._band_pass_low_cutoff_range = Range(100, 10000, 100, 500, 200)
         self._band_pass_low_cutoff_win = RangeWidget(self._band_pass_low_cutoff_range, self.set_band_pass_low_cutoff, 'band_pass_low_cutoff', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._band_pass_low_cutoff_win)
+        self.top_layout.addWidget(self._band_pass_low_cutoff_win)
         self._band_pass_high_cutoff_range = Range(1000, 10000, 100, 6000, 200)
         self._band_pass_high_cutoff_win = RangeWidget(self._band_pass_high_cutoff_range, self.set_band_pass_high_cutoff, 'band_pass_high_cutoff', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._band_pass_high_cutoff_win)
-        self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
-                interpolation=48,
-                decimation=200,
-                taps=None,
-                fractional_bw=0.1)
+        self.top_layout.addWidget(self._band_pass_high_cutoff_win)
+        self.uhd_usrp_source_0 = uhd.usrp_source(
+            ",".join(("", "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+        )
+        self.uhd_usrp_source_0.set_center_freq(center_freq, 0)
+        self.uhd_usrp_source_0.set_gain(10, 0)
+        self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_samp_rate(samp_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_f(
+            4096, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            center_freq, #fc
+            samp_rate/decim, #bw
+            "", #name
+            1 #number of inputs
+        )
+        self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_0.enable_grid(False)
+        self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
+
+
+        self.qtgui_waterfall_sink_x_0.set_plot_pos_half(not True)
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
+        colors = [0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
+            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
+
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.qtgui_time_sink_x_1 = qtgui.time_sink_c(
             1024, #size
             samp_rate, #samp_rate
@@ -151,10 +193,10 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_1.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_1_win = sip.wrapinstance(self.qtgui_time_sink_x_1.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_1_win)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_1_win)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             1024, #size
-            samp_rate, #samp_rate
+            samp_rate/decim, #samp_rate
             'AM signal', #name
             1 #number of inputs
         )
@@ -198,7 +240,7 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.qtgui_freq_sink_x_1 = qtgui.freq_sink_c(
             1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -238,38 +280,21 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_1.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_1_win = sip.wrapinstance(self.qtgui_freq_sink_x_1.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_1_win)
-        self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ""
-        )
-        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.osmosdr_source_0.set_sample_rate(samp_rate)
-        self.osmosdr_source_0.set_center_freq(center_freq, 0)
-        self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
-        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
-        self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(10, 0)
-        self.osmosdr_source_0.set_if_gain(20, 0)
-        self.osmosdr_source_0.set_bb_gain(20, 0)
-        self.osmosdr_source_0.set_antenna('', 0)
-        self.osmosdr_source_0.set_bandwidth(0, 0)
+        self.top_layout.addWidget(self._qtgui_freq_sink_x_1_win)
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decim, firdes.low_pass(1,samp_rate,samp_rate/(2*decim), 2000), center_freq, samp_rate)
         self.blocks_complex_to_mag_0_0 = blocks.complex_to_mag(1)
         self.band_pass_filter_0 = filter.fir_filter_fff(
             1,
             firdes.band_pass(
                 1,
-                samp_rate,
+                samp_rate/decim,
                 band_pass_low_cutoff,
                 band_pass_high_cutoff,
                 band_pass_transition,
                 firdes.WIN_HAMMING,
                 6.76))
-        self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_agc_xx_0 = analog.agc_cc(1e-4, 1.0, 1.0)
         self.analog_agc_xx_0.set_max_gain(65536)
-
 
 
         ##################################################
@@ -277,13 +302,13 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.analog_agc_xx_0, 0), (self.blocks_complex_to_mag_0_0, 0))
         self.connect((self.band_pass_filter_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.band_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.band_pass_filter_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.blocks_complex_to_mag_0_0, 0), (self.band_pass_filter_0, 0))
         self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.analog_agc_xx_0, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.qtgui_freq_sink_x_1, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.qtgui_time_sink_x_1, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_1, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_time_sink_x_1, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "usrp_4000_hf_am_receiver")
@@ -295,19 +320,23 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
+        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/self.decim, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
         self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1,self.samp_rate,self.samp_rate/(2*self.decim), 2000))
-        self.osmosdr_source_0.set_sample_rate(self.samp_rate)
         self.qtgui_freq_sink_x_1.set_frequency_range(self.center_freq, self.samp_rate)
-        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate/self.decim)
         self.qtgui_time_sink_x_1.set_samp_rate(self.samp_rate)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decim)
+        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
     def get_decim(self):
         return self.decim
 
     def set_decim(self, decim):
         self.decim = decim
+        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/self.decim, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
         self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1,self.samp_rate,self.samp_rate/(2*self.decim), 2000))
+        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate/self.decim)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decim)
 
     def get_center_freq(self):
         return self.center_freq
@@ -315,29 +344,32 @@ class usrp_4000_hf_am_receiver(gr.top_block, Qt.QWidget):
     def set_center_freq(self, center_freq):
         self.center_freq = center_freq
         self.freq_xlating_fir_filter_xxx_0.set_center_freq(self.center_freq)
-        self.osmosdr_source_0.set_center_freq(self.center_freq, 0)
         self.qtgui_freq_sink_x_1.set_frequency_range(self.center_freq, self.samp_rate)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate/self.decim)
+        self.uhd_usrp_source_0.set_center_freq(self.center_freq, 0)
 
     def get_band_pass_transition(self):
         return self.band_pass_transition
 
     def set_band_pass_transition(self, band_pass_transition):
         self.band_pass_transition = band_pass_transition
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
+        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/self.decim, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
 
     def get_band_pass_low_cutoff(self):
         return self.band_pass_low_cutoff
 
     def set_band_pass_low_cutoff(self, band_pass_low_cutoff):
         self.band_pass_low_cutoff = band_pass_low_cutoff
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
+        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/self.decim, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
 
     def get_band_pass_high_cutoff(self):
         return self.band_pass_high_cutoff
 
     def set_band_pass_high_cutoff(self, band_pass_high_cutoff):
         self.band_pass_high_cutoff = band_pass_high_cutoff
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
+        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/self.decim, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.band_pass_transition, firdes.WIN_HAMMING, 6.76))
+
+
 
 
 
@@ -349,7 +381,9 @@ def main(top_block_cls=usrp_4000_hf_am_receiver, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -365,9 +399,9 @@ def main(top_block_cls=usrp_4000_hf_am_receiver, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

@@ -27,27 +27,27 @@ def gen_audio_stream():
 
 
 class ZMQStreamWrapper():
-  def __init__( self, it ):
-    self.it = it
-    self.next_chunk = b''
+    def __init__( self, it ):
+        self.it = it
+        self.next_chunk = b''
   
-  def growChunk( self ):
-    self.next_chunk = self.next_chunk + self.it.__next__()
+    def growChunk( self ):
+        self.next_chunk = self.next_chunk + self.it.__next__()
  
 
-  def read( self, n ):
-    if self.next_chunk == None:
-      return None
-    try:
-      while len(self.next_chunk)<n:
-        self.growChunk()
-      rv = self.next_chunk[:n]
-      self.next_chunk = self.next_chunk[n:]
-      return rv
-    except StopIteration:
-      rv = self.next_chunk
-      self.next_chunk = None
-      return rv
+    def read( self, n ):
+        if self.next_chunk == None:
+            return None
+        try:
+            while len(self.next_chunk)<n:
+                self.growChunk()
+                rv = self.next_chunk[:n]
+                self.next_chunk = self.next_chunk[n:]
+                return rv
+        except StopIteration:
+            rv = self.next_chunk
+            self.next_chunk = None
+            return rv
 
 
 if __name__ == "__main__":
