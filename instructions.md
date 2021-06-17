@@ -1,8 +1,8 @@
 # USRP E312 Setup
-## My Files
 
-  * https://github.com/herrfeder/gnuradio_graphs
+## Gnuradio and USRP E312
 
+  * for enabling network mode (GnuRadio USRP Source) we need to install UHD 4.0.0.0 on the E312 (see "Downloading and Burning SD Card Images") and UHD 4.0.0.0 on GnuRadio itself ("Build UHD and GnuRadio with PyBombs") 
 
 ## Build UHD from Source on Host
 
@@ -36,8 +36,7 @@ https://github.com/gnuradio/pybombs
 
 ## Downloading and Burning SD Card Images
 
-
-### With UHD 4.0 
+### With UHD 4.0.0.0
 
   * when successfully installed latest UHD (4.0.0.0) with PyBombs then we can download the UHD v4.0 Image for the E312:
 
@@ -66,7 +65,7 @@ uhd_usrp_probe --args="addr=192.168.10.2"
 
 ### Network on UHD 4.0.0.0
 
-Place following config into `/lib/systemd/network`:
+Place following config into `/lib/systemd/network/40-eth0.network`:
 
 ```
 [Match]
@@ -79,8 +78,10 @@ DNS=192.168.10.1
 ```
 
 ## Gnuradio in Docker
+  * X11 Forwarding with QT Gui Applications is hard to realize when multiple windows are popping
 
-  * I'm using the following Dockerfile with some adaptioins:
+
+  * I'm using the following Dockerfile with some adaptions:
     * https://github.com/EttusResearch/ettus-docker/blob/master/ubuntu-uhd/Dockerfile
 
 ```
