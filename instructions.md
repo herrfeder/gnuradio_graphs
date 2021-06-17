@@ -1,4 +1,9 @@
 # USRP E312 Setup
+## Overview
+
+  * `usrp_graphs` contains only flowgraph files that works with GnuRadio Versions below 3.8 
+    * it's intended to use them with gnuradio-companion on the Ettus USRP E312 itself    
+
 
 ## Gnuradio and USRP E312
 
